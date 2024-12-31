@@ -23,14 +23,14 @@ jobs:
         with:
           node-version: '18'
 
-      # Install Dependencies
+      # Install dependencies
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
-      # Build the Application
-      - name: Run Build
-        run: npm run build
+      # Install Playwright browsers
+      - name: Install Playwright Browsers
+        run: npx playwright install
 
       # Run Tests
-      - name: Run Tests
-        run: npm test
+      - name: Run Playwright Tests
+        run: npm run test:e2e
