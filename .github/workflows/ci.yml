@@ -30,6 +30,9 @@ jobs:
       # Install Playwright browsers
       - name: Install Playwright Browsers
         run: npx playwright install
+      # Build the Application
+      - name: Run Build
+        run: npm run build
 
       # Run Tests
       - name: Run Playwright Tests
