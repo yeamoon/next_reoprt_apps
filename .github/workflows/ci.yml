@@ -27,7 +27,14 @@ jobs:
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
-      # Step 4: Build the application
+      
+     
+      - name: Install Playwright dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget
+          npx playwright install-deps
+        # Step 4: Build the application
       - name: Build the project
         run: npm run build
 
@@ -35,13 +42,7 @@ jobs:
       - name: Serve the app
         run: |
           npx serve out &
-          sleep 10         
-     
-      - name: Install Playwright dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget
-          npx playwright install-deps
+          sleep 10   
       # Step 6: Run Playwright Tests
       - name: Run Playwright Tests
         run: |
