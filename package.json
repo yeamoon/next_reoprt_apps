@@ -8,7 +8,7 @@
   "start": "next start",
   "lint": "next lint",
   "test": "vitest src/tests/vite.test.ts", 
-  "test:e2e": "npm run build && next export && npx serve out & playwright test", 
+  "test:e2e": "next build && next export && npx serve out & playwright test", 
   "test:e2e:report": "playwright show-report", 
   "export": "next export", 
   "deploy": "gh-pages -d out"
