@@ -34,7 +34,7 @@ jobs:
       # Step 5: Serve the application in the background
       - name: Serve the app
         run: |
-          npm run start &  
+          npx serve out &
           sleep 10         
 
       # Step 6: Run Playwright Tests
