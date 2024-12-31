@@ -36,14 +36,38 @@ jobs:
         run: |
           npx serve out &
           sleep 10         
-
+     
+      - name: Install Playwright dependencies
+        run: |
+         sudo apt-get update
+         sudo apt-get install -y \
+          libwoff2dec1 \
+          libvpx6 \
+          libevent-2.1-7 \
+          libopus0 \
+          libgdk-pixbuf2.0-0 \
+          libatk-bridge2.0-0 \
+          libx264-152 \
+          libnss3 \
+          libflac8 \
+          libavif13 \
+          libharfbuzz-icu0 \
+          libhyphen0 \
+          libmanette-0.2-0 \
+          libgdk-pixbuf2.0-0
       # Step 6: Run Playwright Tests
       - name: Run Playwright Tests
         run: |
-          npx playwright install 
+        
           npm run test:e2e      
         env:
           CI: true 
       # Step 7: Kill the server
       - name: Stop server
         run: kill $(lsof -t -i:3000) || true 
+
+
+
+
+  
+ 
