@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest src/tests/vite.test.ts",
+    "test": "vitest src/tests/vite.test.ts", 
+    "test:e2e": "playwright test", // Script for Playwright E2E testing
+    "test:e2e:report": "playwright show-report", // Show Playwright test results
     "export": "next export", 
     "deploy": "gh-pages -d out"
   },
@@ -25,7 +27,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@playwright/test": "^1.48.2",
+    "@playwright/test": "^1.48.2", // Playwright for E2E testing
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.0.1",
