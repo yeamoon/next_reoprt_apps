@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest src/tests/vite.test.ts", 
-    "test:e2e": "playwright test", // Script for Playwright E2E testing
-    "test:e2e:report": "playwright show-report", // Show Playwright test results
+    "test:e2e": "playwright test",
+    "test:e2e:report": "playwright show-report", 
     "export": "next export", 
     "deploy": "gh-pages -d out"
   },
