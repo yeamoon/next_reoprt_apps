@@ -25,18 +25,18 @@ RUN npm run build
 FROM node:20 AS runner
 WORKDIR /app
 
-# Install `serve` to run the built app
-RUN npm install -g serve
+# Install Next.js globally for the runner
+RUN npm install -g next
 
 # Copy the Next.js build and production files
 COPY --from=builder /app/next.config.ts ./next.config.js
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/node_modules ./node_modules  # Ensure node_modules are available
 
 # Expose the port
 EXPOSE 3000
 
-# Start the app using a production server
-CMD ["serve", "-s", ".next", "-l", "0.0.0.0:3000"]
-
+# Start the app using Next.js in production mode
+CMD ["next", "start", "-p", "3000"]
