@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> 378ebd0 (Initial commit)
 import { defineConfig, devices } from "@playwright/test";
 
 /**

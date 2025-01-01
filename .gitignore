@@ -43,3 +43,14 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+<<<<<<< HEAD
+=======
+
+.env
+
+# Ignore terraform directories
+terraform/.terraform/
+terraform/.terraform/**
+
+# Add other files you don't want to track
+>>>>>>> 378ebd0 (Initial commit)
