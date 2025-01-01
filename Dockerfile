@@ -32,7 +32,7 @@ RUN npm install -g serve
 COPY --from=builder /app/out ./out
 
 # Expose the port
-EXPOSE 8080
+EXPOSE 3000
 
 # Start the app using serve to serve the static files
-CMD ["npx", "serve@latest", "out", "-l", "8080"]
+CMD ["npx", "serve@latest", "out", "-l", "3000"]
