@@ -23,3 +23,4 @@ resource "google_compute_instance" "vm_instance" {
     echo "Infrastructure created. Ready for app deployment."
   EOT
 }
+}
