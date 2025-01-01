@@ -5,7 +5,7 @@ application using Playwright. */
 
 import { expect, test } from '@playwright/test';
 import { chromium     } from 'playwright';
-=======
+
 import { expect, test } from '@playwright/test';
 import { chromium } from 'playwright';
 
@@ -29,7 +29,7 @@ test('verify date filtering for UI', async ({ page }) => {
 	await expect(startDate).toHaveValue('2024-11-01');
 	await expect(endDate).toHaveValue('2024-11-05');
 	await expect(page.getByRole('main')).toContainText('Nov 1, 2024 - Nov 5, 2024');
-=======
+
   await page.goto('http://localhost:3000/');  // Ensure using the correct port
 
   const startDate = page.locator('div').filter({ hasText: /^Start Date$/ }).getByRole('textbox');
@@ -58,7 +58,7 @@ test('verify date filtering for URL', async ({ page }) => {
 	await expect(startDate).toHaveValue('2024-11-01');
 	await expect(endDate).toHaveValue('2024-11-05');
 	await expect(page.getByRole('main')).toContainText('Nov 1, 2024 - Nov 5, 2024');
-=======
+
   await page.goto('http://localhost:3000/?startDate=2024-11-01&endDate=2024-11-05');  // Ensure using the correct port
 
   const startDate = page.locator('div').filter({ hasText: /^Start Date$/ }).getByRole('textbox');
@@ -74,7 +74,7 @@ section (checkboxes) to show and hide individual reports. By default, no boxes
 are checked, and all three reports are shown. If one or more checkboxes are
 selected, then _only_ those reports will be visible. */
 test('verify device filtering', async ({ page }) => {
-<<<<<<< HEAD
+
 	await page.goto('http://localhost:3000/');
 
 	await page.getByLabel('MakerBot').check();
@@ -92,7 +92,7 @@ test('verify device filtering', async ({ page }) => {
 	await expect(page.getByText('MakerBot Production Report')).toBeVisible();
 	await expect(page.getByText('Ender Production Report')).toBeVisible();
 	await expect(page.getByText('Prusa Production Report')).toBeVisible();
-=======
+
   await page.goto('http://localhost:3000/');  // Ensure using the correct port
 
   await page.getByLabel('MakerBot').check();
@@ -136,7 +136,7 @@ test('verify chart and table renders', async ({ page }) => {
 	await expect(page.getByRole('main')).toContainText('Changeover');
 	await expect(page.getByRole('main')).toContainText('Meeting');
 	await expect(page.getByRole('main')).toContainText('Duration (hours');
-=======
+
   await page.goto('http://localhost:3000/');  // Ensure using the correct port
 
   await page.getByLabel('MakerBot').check();
