@@ -1,0 +1,41 @@
+name: Deploy Application to GCP (Docker Hub)
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on pushes to the main branch
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Authenticate with Google Cloud
+      - name: Authenticate with GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      # Step 2: Set up gcloud CLI
+      - name: Set up Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+          export_default_credentials: true
+
+      # Step 3: Update VM Metadata to Use New Docker Image
+      - name: Update VM Docker Container
+        run: |
+          gcloud compute instances update-container docker-vm \
+            --zone=${{ secrets.GCP_zone }} \
+            --container-image=sultana730/report_app:main-bc859b2
+
+      # Step 4: Restart the VM to Pull the Updated Image
+      - name: Restart Google Compute Engine VM
+        run: |
+          gcloud compute instances reset docker-vm \
+            --zone=${{ secrets.GCP_zone }}
