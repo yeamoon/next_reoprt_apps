@@ -10,7 +10,6 @@ resource "google_compute_instance" "vm_instance" {
     }
   }
 
-  # Network configuration
   network_interface {
     network    = "default"
     access_config {
@@ -18,12 +17,17 @@ resource "google_compute_instance" "vm_instance" {
     }
   }
 
-  # Metadata without Docker container deployment
   metadata = {
-    "startup-script" = <<EOF
-    #!/bin/bash
-    echo "Infrastructure created. VM is ready for app deployment."
-    EOF
+    "gce-container-declaration" = <<EOF
+spec:
+  containers:
+    - name: report-app
+      image: ${var.docker_image}
+      ports:
+        - containerPort: 3000
+          hostPort: 80
+  restartPolicy: Always
+EOF
   }
 }
 
