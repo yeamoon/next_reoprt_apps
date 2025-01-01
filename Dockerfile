@@ -18,11 +18,8 @@ COPY . .
 # Copy installed dependencies from the previous stage
 COPY --from=dependencies /app/node_modules ./node_modules
 
-# Build the Next.js app
+# Build the Next.js app (this will generate the static files in `out`)
 RUN npm run build
-
-# Export the static files
-RUN npm run export
 
 # Production image for running the app
 FROM node:20 AS runner
