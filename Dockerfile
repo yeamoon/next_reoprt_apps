@@ -29,7 +29,7 @@ WORKDIR /app
 RUN npm install -g next
 
 # Copy the Next.js build and production files
-COPY --from=builder /app/next.config.ts ./next.config.js
+COPY --from=builder /app/next.config.ts ./next.config.ts
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
