@@ -16,7 +16,9 @@ resource "google_compute_instance" "vm_instance" {
     }
   }
 
-  metadata_startup_script = <<-EOT
+  metadata = {
+    "gce-container-declaration" = <<EOF
+
     #!/bin/bash
     echo "Infrastructure created. Ready for app deployment."
   EOT
