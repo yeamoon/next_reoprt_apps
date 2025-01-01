@@ -1,0 +1,25 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the code
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+
+
+    - name: build and push docker image
+      uses: mr-smithers-excellent/docker-build-push@v6
+      with:
+        image: sultana730/report_app
+        registry: docker.io
+        username: 'sultana730'
+        password: 'Bismillah@123'
