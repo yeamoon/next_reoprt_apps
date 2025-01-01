@@ -36,7 +36,7 @@ EOF
 
 # Firewall rule to allow HTTP traffic
 resource "google_compute_firewall" "default" {
-  name    = "allow-http"
+  name    = "allow--http"
   network = "default"
 
   allow {
