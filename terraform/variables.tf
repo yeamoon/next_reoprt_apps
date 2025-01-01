@@ -1,6 +1,6 @@
 variable "docker_image" {
   description = "Docker image to deploy"
-  default     = "sultana730/report_app:main-147fd97"
+  default     = "sultana730/report_app:main-bc859b2"
 }
 
 variable "region" {
