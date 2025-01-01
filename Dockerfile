@@ -35,4 +35,4 @@ COPY --from=builder /app/out ./out
 EXPOSE 3000
 
 # Start the app using serve to serve the static files
-CMD ["npx", "serve@latest", "out", "-l", "3000"]
+CMD ["npx", "serve@latest", "out", "-l", "8080"]
