@@ -38,4 +38,5 @@ COPY --from=builder /app/package.json ./package.json
 EXPOSE 3000
 
 # Start the app using a production server
-CMD ["serve", "-s", ".next", "-l", "3000"]
+CMD ["serve", "-s", ".next", "-l", "0.0.0.0:3000"]
+
