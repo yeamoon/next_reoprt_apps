@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 
 /* `playwright.spec.ts` contains functionality tests written for the
 application using Playwright. */
@@ -8,14 +8,14 @@ import { chromium     } from 'playwright';
 =======
 import { expect, test } from '@playwright/test';
 import { chromium } from 'playwright';
->>>>>>> 378ebd0 (Initial commit)
+
 
 /* This test loads the application and checks that it displays the default
 start and end dates (the start of October 27, 2024 to the end of October 29,
 2024). It then uses the date field to set the interval to November 1, 2024 to
 November 5, 2024, and checks that the changes are visible on the front end. */
 test('verify date filtering for UI', async ({ page }) => {
-<<<<<<< HEAD
+
 	await page.goto('http://localhost:3000/');
 
 	const startDate = page.locator('div').filter({ hasText: /^Start Date$/ }).getByRole('textbox');
@@ -43,14 +43,14 @@ test('verify date filtering for UI', async ({ page }) => {
   await expect(startDate).toHaveValue('2024-11-01');
   await expect(endDate).toHaveValue('2024-11-05');
   await expect(page.getByRole('main')).toContainText('Nov 1, 2024 - Nov 5, 2024');
->>>>>>> 378ebd0 (Initial commit)
+
 });
 
 /* This test loads the application and uses the URL to set the time interval to
 November 1, 2024 to November 5, 2024, and checks that the changes are visible
 on the front end. */
 test('verify date filtering for URL', async ({ page }) => {
-<<<<<<< HEAD
+
 	await page.goto('http://localhost:3000/?startDate=2024-11-01&endDate=2024-11-05');
 
 	const startDate = page.locator('div').filter({ hasText: /^Start Date$/ }).getByRole('textbox');
@@ -66,7 +66,7 @@ test('verify date filtering for URL', async ({ page }) => {
   await expect(startDate).toHaveValue('2024-11-01');
   await expect(endDate).toHaveValue('2024-11-05');
   await expect(page.getByRole('main')).toContainText('Nov 1, 2024 - Nov 5, 2024');
->>>>>>> 378ebd0 (Initial commit)
+
 });
 
 /* This test loads the application and interacts with the device filtering
@@ -104,13 +104,13 @@ test('verify device filtering', async ({ page }) => {
   await expect(page.getByText('MakerBot Production Report')).toBeVisible();
   await expect(page.getByText('Ender Production Report')).toBeVisible();
   await expect(page.getByText('Prusa Production Report')).toBeVisible();
->>>>>>> 378ebd0 (Initial commit)
+
 });
 
 /* This test loads the application with the MakerBot report and verifies that
 the chart and tables are displayed on the front end with the expected data. */
 test('verify chart and table renders', async ({ page }) => {
-<<<<<<< HEAD
+
 	await page.goto('http://localhost:3000/');
 
 	await page.getByLabel('MakerBot').check();
@@ -162,13 +162,13 @@ test('verify chart and table renders', async ({ page }) => {
   await expect(page.getByRole('main')).toContainText('Changeover');
   await expect(page.getByRole('main')).toContainText('Meeting');
   await expect(page.getByRole('main')).toContainText('Duration (hours');
->>>>>>> 378ebd0 (Initial commit)
+
 });
 
 /* This test launches a Chromium browser and selects the "Download" button to
 make sure the application can successfully generate a PDF and save it to the
 user's system. */
-<<<<<<< HEAD
+
 test('verify PDF and print', async () => {
 	const browser = await chromium.launch({ headless: true });
 	const page = await browser.newPage({ acceptDownloads: true });
@@ -180,7 +180,6 @@ test('verify PDF and print', async () => {
 	]);
 	expect(download.path);
 });
-=======
 
 
 test('verify PDF and print', async () => {
@@ -207,4 +206,4 @@ test('verify PDF and print', async () => {
 });
  // Increase the timeout to 60 seconds or more
   
->>>>>>> 378ebd0 (Initial commit)
+
