@@ -5,10 +5,9 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-<<<<<<< HEAD
+
     "start": "next start",
-=======
->>>>>>> 378ebd0 (Initial commit)
+
     "lint": "next lint",
     "test": "vitest src/tests/vite.test.ts",
     "test:e2e": "npx playwright test",
