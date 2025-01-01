@@ -2,6 +2,7 @@ resource "google_compute_instance" "vm_instance" {
   name         = "docker-vm"
   machine_type = "e2-medium"
   zone         = var.zone
+
   # Disk and image configuration
   boot_disk {
     initialize_params {
@@ -9,6 +10,7 @@ resource "google_compute_instance" "vm_instance" {
     }
   }
 
+  # Network configuration
   network_interface {
     network    = "default"
     access_config {
@@ -16,11 +18,24 @@ resource "google_compute_instance" "vm_instance" {
     }
   }
 
+  # Metadata without Docker container deployment
   metadata = {
-    "gce-container-declaration" = <<EOF
-
+    "startup-script" = <<EOF
     #!/bin/bash
-    echo "Infrastructure created. Ready for app deployment."
-  EOT
+    echo "Infrastructure created. VM is ready for app deployment."
+    EOF
+  }
 }
+
+# Firewall rule to allow HTTP traffic
+resource "google_compute_firewall" "default" {
+  name    = "allow-http"
+  network = "default"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["80"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]
 }
