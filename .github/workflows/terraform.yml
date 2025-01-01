@@ -1,0 +1,39 @@
+name: Deploy to GCP
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the code
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    # Set up Terraform
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.5.0
+
+    # Authenticate to GCP
+    - name: Authenticate to GCP
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+    # Initialize Terraform
+    - name: Initialize Terraform
+      run: terraform -chdir=terraform init
+
+    # Plan Terraform Changes
+    - name: Terraform Plan
+      run: terraform -chdir=terraform plan
+
+    # Apply Terraform Changes
+    - name: Terraform Apply
+      run: terraform -chdir=terraform apply -auto-approve
