@@ -21,24 +21,21 @@ COPY --from=dependencies /app/node_modules ./node_modules
 # Build the Next.js app
 RUN npm run build
 
+# Export the static files
+RUN npm run export
+
 # Production image for running the app
 FROM node:20 AS runner
 WORKDIR /app
 
-# Install Next.js globally for the runner
-RUN npm install -g next
+# Install `serve` to serve the static files
+RUN npm install -g serve
 
-# Copy the Next.js build and production files
-COPY --from=builder /app/next.config.ts ./next.config.js
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./package.json
-
-# Ensure node_modules are available in the runner stage
-COPY --from=builder /app/node_modules ./node_modules
+# Copy the Next.js static export and production files
+COPY --from=builder /app/out ./out
 
 # Expose the port
 EXPOSE 3000
 
-# Start the app using Next.js in production mode
-CMD ["next", "start", "-p", "3000"]
+# Start the app using serve to serve the static files
+CMD ["npx", "serve@latest", "out", "-l", "3000"]
