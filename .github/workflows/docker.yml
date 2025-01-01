@@ -1,25 +1,38 @@
-name: Build and Push Docker Image
+# Install dependencies only when needed
+FROM node:20 AS dependencies
+WORKDIR /app
 
-on:
-  push:
-    branches:
-      - main
+# Copy package.json and package-lock.json
+COPY package.json package-lock.json ./
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# Install dependencies
+RUN npm install --frozen-lockfile --legacy-peer-deps
 
-    steps:
-    # Checkout the code
-    - name: Checkout Code
-      uses: actions/checkout@v2
+# Build the application
+FROM node:20 AS builder
+WORKDIR /app
 
+# Copy all application files
+COPY . .
 
+# Copy installed dependencies from the previous stage
+COPY --from=dependencies /app/node_modules ./node_modules
 
-    - name: build and push docker image
-      uses: mr-smithers-excellent/docker-build-push@v6
-      with:
-        image: sultana730/report_app
-        registry: docker.io
-        username: 'sultana730'
-        password: 'Bismillah@123'
+# Build the Next.js app (this will generate the static files in `out`)
+RUN npm run build
+
+# Production image for running the app
+FROM node:20 AS runner
+WORKDIR /app
+
+# Install `serve` to serve the static files
+RUN npm install -g serve
+
+# Copy the Next.js static export and production files
+COPY --from=builder /app/out ./out
+
+# Expose the port
+EXPOSE 3000
+
+# Start the app using serve to serve the static files
+CMD ["npx", "serve@latest", "out", "-l", "3000"]
