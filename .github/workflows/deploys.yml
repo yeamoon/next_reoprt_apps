@@ -1,48 +1,60 @@
-name: Build and Deploy Docker Image to Google Cloud VM
+name: CI/CD Pipeline to Build Docker Image and Deploy to GCP VM
 
 on:
   push:
     branches:
-      - main  # Trigger on push to the main branch (or any branch you prefer)
-
+      - main  # Trigger on push to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger on pull request to the main branch
 
 jobs:
-  build-and-deploy:
+  build_and_deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code from the repository
-      - name: Checkout repository
+      # Step 1: Checkout the code
+      - name: Checkout code
         uses: actions/checkout@v2
 
       # Step 2: Set up Docker
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v1
 
-      # Step 3: Login to Google Cloud using service account key
-      - name: Google Cloud Authenticate
-        uses: google-github-actions/auth@v0
+      # Step 3: Build the Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/report-app:${{ github.sha }} .
+
+      # Step 4: Authenticate with Docker Hub (or any other registry)
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
         with:
-          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Step 4: Build Docker Image
-      - name: Build Docker Image
+      # Step 5: Push Docker image to Docker Hub (or other registry)
+      - name: Push Docker image to Docker Hub
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/report-app:$GITHUB_SHA .
+          docker push ${{ secrets.DOCKER_USERNAME }}/report-app:${{ github.sha }}
 
-      # Step 5: Push the Docker Image to Google Container Registry (GCR)
-      - name: Push Docker Image to GCR
-        run: |
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/report-app:$GITHUB_SHA
+      # Step 6: Set up Google Cloud CLI
+      - name: Set up Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
 
-      # Step 6: SSH into Google Cloud VM and Deploy Docker Image
-      - name: Deploy Docker Image to VM
+      # Step 7: Deploy Docker image to Google Cloud VM
+      - name: Deploy Docker image to GCP VM
         run: |
-          gcloud compute ssh docker-vm1 \
-            --zone=${{ secrets.GCP_ZONE }} \
-            --command="
-              docker pull gcr.io/${{ secrets.GCP_PROJECT_ID }}/report-app:$GITHUB_SHA && 
-              docker stop my-app-container || true &&
-              docker rm my-app-container || true &&
-              docker run -d --name my-app-container gcr.io/${{ secrets.GCP_PROJECT_ID }}/report-app:$GITHUB_SHA
-            "
+          gcloud compute ssh docker-vm1 --zone=${{ secrets.GCP_ZONE }} --command="
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/report-app:${{ github.sha }} &&
+            sudo docker run -d -p 80:80 ${{ secrets.DOCKER_USERNAME }}/report-app:${{ github.sha }}"
+      
+      # Step 8: Run Smoke Tests (Check if the app is up and running)
+      - name: Run Smoke Tests (Check if app is up)
+        run: |
+          IP_ADDRESS=$(gcloud compute instances describe docker-vm1 --zone=${{ secrets.GCP_ZONE }} --format="get(networkInterfaces[0].accessConfigs[0].natIP)")
+          echo "Checking if app is running at http://$IP_ADDRESS"
+          curl --silent --fail http://$IP_ADDRESS || exit 1  # Fail if unable to access the app
