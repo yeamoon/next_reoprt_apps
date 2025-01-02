@@ -38,12 +38,18 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/report-app:${{ github.sha }}
 
-      # Step 6: Set up Google Cloud CLI
+     # Step 3: Authenticate with Google Cloud
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}  # Your service account key stored in GitHub Secrets
+
+      # Step 4: Set up Google Cloud CLI
       - name: Set up Google Cloud CLI
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+
 
       # Step 7: Deploy Docker image to Google Cloud VM
       - name: Deploy Docker image to GCP VM
