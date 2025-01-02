@@ -1,0 +1,48 @@
+name: Build and Deploy Docker Image to Google Cloud VM
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to the main branch (or any branch you prefer)
+
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code from the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Docker
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Step 3: Login to Google Cloud using service account key
+      - name: Google Cloud Authenticate
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      # Step 4: Build Docker Image
+      - name: Build Docker Image
+        run: |
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/report-app:$GITHUB_SHA .
+
+      # Step 5: Push the Docker Image to Google Container Registry (GCR)
+      - name: Push Docker Image to GCR
+        run: |
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/report-app:$GITHUB_SHA
+
+      # Step 6: SSH into Google Cloud VM and Deploy Docker Image
+      - name: Deploy Docker Image to VM
+        run: |
+          gcloud compute ssh docker-vm1 \
+            --zone=${{ secrets.GCP_ZONE }} \
+            --command="
+              docker pull gcr.io/${{ secrets.GCP_PROJECT_ID }}/report-app:$GITHUB_SHA && 
+              docker stop my-app-container || true &&
+              docker rm my-app-container || true &&
+              docker run -d --name my-app-container gcr.io/${{ secrets.GCP_PROJECT_ID }}/report-app:$GITHUB_SHA
+            "
