@@ -36,8 +36,8 @@ jobs:
         run: |
           gcloud compute instances create-with-container docker-vm1 \
             --zone=${{ secrets.GCP_ZONE }} \
-            --container-image=${{ secrets.DOCKER_IMAGE }} \
-            --container-restart-policy=always
+            --container-image=${{ secrets.DOCKER_IMAGE }} 
+   
 
 
       - name: Run Smoke Tests (Check if app is up)
