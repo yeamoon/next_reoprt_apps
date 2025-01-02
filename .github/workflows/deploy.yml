@@ -34,7 +34,7 @@ jobs:
  # Step 4: Create VM with Docker Container
       - name: Create VM and Deploy Docker Container
         run: |
-          gcloud compute instances create-with-container <instance-name> \
+          gcloud compute instances create-with-container docker-vm \
             --zone=${{ secrets.GCP_ZONE }} \
             --container-image=${{ secrets.DOCKER_IMAGE }} \
             --container-restart-policy=always
