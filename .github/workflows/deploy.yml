@@ -34,7 +34,7 @@ jobs:
  # Step 4: Create VM with Docker Container
       - name: Create VM and Deploy Docker Container
         run: |
-          gcloud compute instances create-with-container docker-vm1 \
+          gcloud compute instances create-with-container docker-vm2 \
             --zone=${{ secrets.GCP_ZONE }} \
             --container-image=${{ secrets.DOCKER_IMAGE }} 
    
@@ -42,7 +42,7 @@ jobs:
 
       - name: Run Smoke Tests (Check if app is up)
         run: |
-          IP_ADDRESS=$(gcloud compute instances describe docker-vm1 --zone=${{ secrets.GCP_ZONE }} --format="get(networkInterfaces[0].accessConfigs[0].natIP)")
+          IP_ADDRESS=$(gcloud compute instances describe docker-vm2 --zone=${{ secrets.GCP_ZONE }} --format="get(networkInterfaces[0].accessConfigs[0].natIP)")
           echo "Checking if app is running at http://$IP_ADDRESS"
           curl --silent --fail http://$IP_ADDRESS || exit 1  # Fail if unable to access the app
 
