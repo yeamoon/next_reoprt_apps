@@ -1,4 +1,4 @@
-name: Deploy Application to GCP (Docker Hub)
+name: Deploy Docker Image to GCP VM
 
 on:
   push:
@@ -6,20 +6,24 @@ on:
       - main  # Trigger the workflow on pushes to the main branch
   pull_request:
     branches:
-      - main
+      - main  # Trigger the workflow on pull requests to the main branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Authenticate with Google Cloud
-      - name: Authenticate with GCP
+      # Step 1: Checkout Code
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      # Step 2: Authenticate with Google Cloud
+      - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v1
         with:
-          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+          credentials_json: ${{ secrets.GCP_CREDENTIALS}}
 
-      # Step 2: Set up gcloud CLI
+      # Step 3: Set up Google Cloud CLI
       - name: Set up Google Cloud CLI
         uses: google-github-actions/setup-gcloud@v1
         with:
@@ -27,15 +31,15 @@ jobs:
           service_account_key: ${{ secrets.GCP_CREDENTIALS }}
           export_default_credentials: true
 
-      # Step 3: Update VM Metadata to Use New Docker Image
-      - name: Update VM Docker Container
+      # Step 4: Update VM with Docker Image and Deploy Container
+      - name: Deploy Docker Image to VM
         run: |
           gcloud compute instances update-container docker-vm \
-            --zone=${{ secrets.GCP_zone }} \
-            --container-image=sultana730/report_app:main-bc859b2
+            --zone=${{ secrets.GCP_ZONE }} \
+            --container-image=${{ secrets.DOCKER_IMAGE }}
 
-      # Step 4: Restart the VM to Pull the Updated Image
-      - name: Restart Google Compute Engine VM
+      # Step 5: Restart VM to Apply Container Update (optional)
+      - name: Restart VM to Apply Container Update
         run: |
           gcloud compute instances reset docker-vm \
-            --zone=${{ secrets.GCP_zone }}
+            --zone=${{ secrets.GCP_ZONE }}
