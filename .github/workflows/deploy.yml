@@ -31,12 +31,14 @@ jobs:
           service_account_key: ${{ secrets.GCP_CREDENTIALS }}
           export_default_credentials: true
 
-      # Step 4: Update VM with Docker Image and Deploy Container
-      - name: Deploy Docker Image to VM
+ # Step 4: Create VM with Docker Container
+      - name: Create VM and Deploy Docker Container
         run: |
-          gcloud compute instances update-container docker-vm \
+          gcloud compute instances create-with-container <instance-name> \
             --zone=${{ secrets.GCP_ZONE }} \
-            --container-image=${{ secrets.DOCKER_IMAGE }}
+            --container-image=${{ secrets.DOCKER_IMAGE }} \
+            --container-restart-policy=always
+
 
       - name: Run Smoke Tests (Check if app is up)
         run: |
