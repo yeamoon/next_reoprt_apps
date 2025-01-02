@@ -38,8 +38,10 @@ jobs:
             --zone=${{ secrets.GCP_ZONE }} \
             --container-image=${{ secrets.DOCKER_IMAGE }}
 
-      # Step 5: Restart VM to Apply Container Update (optional)
-      - name: Restart VM to Apply Container Update
+      - name: Run Smoke Tests (Check if app is up)
         run: |
-          gcloud compute instances reset docker-vm \
-            --zone=${{ secrets.GCP_ZONE }}
+          IP_ADDRESS=$(gcloud compute instances describe docker-vm --zone=${{ secrets.GCP_ZONE }} --format="get(networkInterfaces[0].accessConfigs[0].natIP)")
+          echo "Checking if app is running at http://$IP_ADDRESS"
+          curl --silent --fail http://$IP_ADDRESS || exit 1  # Fail if unable to access the app
+
+       
