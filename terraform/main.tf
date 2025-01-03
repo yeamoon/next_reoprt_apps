@@ -1,5 +1,5 @@
 resource "google_compute_instance" "vm_instance" {
-  name         = "docker-vm"
+  name         = "docker-vm1"
   machine_type = "e2-medium"
   zone         = var.zone
 
