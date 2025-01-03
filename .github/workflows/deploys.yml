@@ -64,7 +64,7 @@ jobs:
           echo "Checking if app is running at http://$IP_ADDRESS"
 
           for i in {1..10}; do
-            if curl --silent --fail http://$IP_ADDRESS; then
+            if curl --silent --fail http://$IP_ADDRESS:3000; then
               echo "App is running!"
               exit 0
             else
