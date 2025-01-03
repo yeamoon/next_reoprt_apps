@@ -56,7 +56,7 @@ jobs:
         run: |
           gcloud compute ssh docker-vm1 --zone=${{ secrets.GCP_ZONE }} --command="
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/report-app:${{ github.sha }} &&
-            sudo docker run -d -p 80:80 ${{ secrets.DOCKER_USERNAME }}/report-app:${{ github.sha }}"
+            sudo docker run -d -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/report-app:${{ github.sha }}"
       
       - name: Run Smoke Tests (Check if app is up)
         run: |
