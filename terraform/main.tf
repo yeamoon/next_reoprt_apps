@@ -17,17 +17,6 @@ resource "google_compute_instance" "vm_instance" {
     }
   }
 
-  metadata = {
-    "gce-container-declaration" = <<EOF
-spec:
-  containers:
-    - name: report-app
-      image: ${var.docker_image}
-      ports:
-        - containerPort: 3000
-          hostPort: 80
-  restartPolicy: Always
-EOF
-  }
+
 }
 
