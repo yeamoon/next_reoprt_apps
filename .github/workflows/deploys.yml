@@ -58,9 +58,21 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/report-app:${{ github.sha }} &&
             sudo docker run -d -p 80:80 ${{ secrets.DOCKER_USERNAME }}/report-app:${{ github.sha }}"
       
-      # Step 8: Run Smoke Tests (Check if the app is up and running)
       - name: Run Smoke Tests (Check if app is up)
         run: |
           IP_ADDRESS=$(gcloud compute instances describe docker-vm1 --zone=${{ secrets.GCP_ZONE }} --format="get(networkInterfaces[0].accessConfigs[0].natIP)")
           echo "Checking if app is running at http://$IP_ADDRESS"
-          curl --silent --fail http://$IP_ADDRESS || exit 1  # Fail if unable to access the app
+
+          for i in {1..10}; do
+            if curl --silent --fail http://$IP_ADDRESS; then
+              echo "App is running!"
+              exit 0
+            else
+              echo "App is not ready yet. Retrying in 5 seconds..."
+              sleep 5
+            fi
+          done
+
+          echo "App failed to respond after multiple attempts."
+          exit 1
+
