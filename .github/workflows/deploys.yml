@@ -75,4 +75,23 @@ jobs:
 
           echo "App failed to respond after multiple attempts."
           exit 1
+        
+      # Step 5: Notify Slack
+      - name: Notify Slack (Deployment Success)
+        if: ${{ success() }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+            --data '{"text":"✅ Deployment Successful! The app has been deployed to GCP VM. 🚀"}' \
+            $SLACK_WEBHOOK_URL
+
+      - name: Notify Slack (Deployment Failed)
+        if: ${{ failure() }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+            --data '{"text":"❌ Deployment Failed. Please check the logs for details. 😞"}' \
+            $SLACK_WEBHOOK_URL
 
