@@ -38,6 +38,9 @@ jobs:
       - name: Build the project
         run: npm run build
 
+      - name: Run Tests
+        run: npm test
+
       - name: Serve the app
         run: |
           npx serve out &
