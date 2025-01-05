@@ -1,5 +1,5 @@
 
-name: CI/CD Pipeline to Build Docker Image and Deploy to GCP VM
+name: Pipeline to Build Docker Image and Deploy to GCP VM
 
 on:
   push:
