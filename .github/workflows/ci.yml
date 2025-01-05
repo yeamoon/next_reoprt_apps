@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI Pipeline to build and run tests
 
 on:
   push:
