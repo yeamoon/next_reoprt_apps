@@ -1,4 +1,4 @@
-name: Deploy to GCP
+name: Creating Infrastructure using Terraform
 
 on:
   push:
