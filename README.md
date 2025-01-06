@@ -204,6 +204,145 @@ Troubleshooting and debugging the button's behavior.
 Updating the test configuration to account for any environment-specific behavior.
 GCP VM Costs
 Limitation: The GCP VM incurs charges for public accessibility. Currently, the app is live on the VM but private. A decision is pending on whether to make it publicly accessible.
+Here's an updated **Pipeline Configuration Explanation** section incorporating the details you provided. It describes each step of your CI/CD process:
+
+---
+
+## **2. Pipeline Configuration Explanation**
+
+The CI/CD pipeline is implemented using **GitHub Actions** and includes workflows for building, testing, and deploying the application. Below is a breakdown of the workflows configured:
+
+---
+
+### **Workflow 1: CI Pipeline for Building and Running Tests**
+
+#### **File Name**: `.github/workflows/ci.yml`
+
+#### **Workflow Steps**:
+1. **Trigger Events**:  
+   The pipeline is triggered on:
+   - Push events to the `main` branch.
+   - Pull requests targeting the `main` branch.
+
+2. **Jobs**:
+   - **Build Job**:
+     - **Checkout Code**:  
+       Retrieves the repository's code using the `actions/checkout@v2` action.
+     - **Set Up Node.js**:  
+       Installs Node.js v20 and sets up the environment.
+     - **Install Dependencies**:  
+       Runs `npm install --legacy-peer-deps` to install all necessary dependencies.
+     - **Clear Playwright Browser Cache**:  
+       Removes old Playwright browser cache to prevent issues.
+     - **Install Playwright Browsers**:  
+       Re-installs Playwright browsers with dependencies using `npx playwright install --with-deps`.
+     - **Build the Project**:  
+       Ensures the application builds successfully by running `npm run build`.
+     - **Run Unit Tests**:  
+       Executes the test suite using `npm test`.
+     - **Serve the App Locally for E2E Tests**:  
+       Starts the app using `npx serve out` and allows it to run in the background.
+     - **Run Playwright Tests**:  
+       Executes Playwright end-to-end tests and generates a detailed HTML report.  
+       Note: This step is configured to continue even if tests fail using `|| true` for debugging purposes.
+     - **Upload Playwright Test Report**:  
+       Saves the Playwright HTML test report as an artifact for later review.
+     - **Stop the Server**:  
+       Stops the local server running on port `3000`.
+
+---
+
+### **Workflow 2: Deployment to GitHub Pages**
+
+#### **File Name**: `.github/workflows/deploy.yml`
+
+#### **Workflow Steps**:
+1. **Trigger Events**:  
+   The workflow is triggered on:
+   - Push events to the `main` branch.
+   - Manual triggers using `workflow_dispatch`.
+
+2. **Jobs**:
+   - **Build Job**:
+     - **Detect Package Manager**:  
+       Automatically determines whether to use `npm` or `yarn` for building the project.
+     - **Install Dependencies**:  
+       Runs `npm install --legacy-peer-deps` to install the required dependencies.
+     - **Build with Next.js**:  
+       Builds the application using `next build`.
+     - **Upload Artifact**:  
+       Uploads the built project (`./out`) as an artifact for deployment.
+
+   - **Deploy Job**:
+     - Deploys the built project to GitHub Pages using `actions/deploy-pages@v4`.
+     - The app is accessible at:  
+       **[https://your-username.github.io/next-report-app](https://your-username.github.io/next-report-app)**.
+
+---
+
+### **Workflow 3: Docker Deployment to Google Cloud VM**
+
+#### **File Name**: `.github/workflows/docker-deploy.yml`
+
+#### **Workflow Steps**:
+1. **Trigger Events**:  
+   This workflow is triggered on:
+   - Push events to the `main` branch.
+   - Pull requests targeting the `main` branch.
+
+2. **Jobs**:
+   - **Build and Deploy Job**:
+     - **Set Up Docker Buildx**:  
+       Configures Docker Buildx for multi-platform builds.
+     - **Build Docker Image**:  
+       Builds the Docker image with the application code.
+     - **Push Docker Image**:  
+       Pushes the Docker image to a container registry like Docker Hub using your credentials.
+     - **Authenticate with GCP**:  
+       Authenticates with Google Cloud using the `google-github-actions/auth@v1` action.
+     - **Deploy to GCP VM**:  
+       Pulls and runs the Docker image on the VM instance using `gcloud compute ssh`.
+
+3. **Post-Deployment Checks**:
+   - **Smoke Tests**:  
+     Runs a health check to ensure the app is accessible at the VM's public IP.
+   - **Slack Notifications**:
+     - Sends a success message if the deployment is successful.
+     - Sends a failure message if the deployment fails, prompting further investigation.
+
+---
+
+### **Workflow 4: Terraform Infrastructure as Code**
+
+#### **File Name**: `.github/workflows/terraform.yml`
+
+#### **Workflow Steps**:
+1. **Trigger Events**:  
+   Triggered on push events to the `main` branch.
+
+2. **Jobs**:
+   - **Deploy Job**:
+     - **Set Up Terraform**:  
+       Configures Terraform using the `hashicorp/setup-terraform@v2` action.
+     - **Authenticate with GCP**:  
+       Uses the `google-github-actions/auth@v1` action to authenticate with Google Cloud.
+     - **Initialize Terraform**:  
+       Initializes the Terraform configuration with `terraform init`.
+     - **Plan Infrastructure**:  
+       Generates a plan for the infrastructure changes using `terraform plan`.
+     - **Apply Infrastructure Changes**:  
+       Deploys the resources using `terraform apply -auto-approve`.
+
+---
+
+### **Key Notes**
+- **Artifacts**: The Playwright test reports are stored as artifacts for debugging.
+- **Environment Variables**: Sensitive credentials, such as Docker registry keys and GCP credentials, are securely stored in GitHub Secrets.
+- **Public Access Costs**: The GCP VM deployment incurs costs for public accessibility. Currently, it is private, but can be made public upon confirmation.
+
+---
+
+This explanation provides a comprehensive overview of your pipeline configuration and should meet the documentation requirements. Let me know if you'd like any further refinements!
 
 
 
