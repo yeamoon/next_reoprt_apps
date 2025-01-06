@@ -40,29 +40,53 @@ Pull requests targeting the main branch.
 Jobs:
 
 Build Job:
+
 Checkout Code:
+
 Retrieves the repository's code using the actions/checkout@v2 action.
+
 Set Up Node.js:
+
 Installs Node.js v20 and sets up the environment.
+
 Install Dependencies:
+
 Runs npm install --legacy-peer-deps to install all necessary dependencies.
+
 Clear Playwright Browser Cache:
+
 Removes old Playwright browser cache to prevent issues.
+
 Install Playwright Browsers:
+
 Re-installs Playwright browsers with dependencies using npx playwright install --with-deps.
+
 Build the Project:
+
 Ensures the application builds successfully by running npm run build.
+
 Run Unit Tests:
+
 Executes the test suite using npm test.
+
 Serve the App Locally for E2E Tests:
+
 Starts the app using npx serve out and allows it to run in the background.
+
 Run Playwright Tests:
+
 Executes Playwright end-to-end tests and generates a detailed HTML report.
+
 Note: This step is configured to continue even if tests fail using || true for debugging purposes.
+
 Upload Playwright Test Report:
+
 Saves the Playwright HTML test report as an artifact for later review.
+
 Stop the Server:
+
 Stops the local server running on port 3000.
+
 Workflow 2: Deployment to GitHub Pages
 File Name: .github/workflows/deploy.yml
 Workflow Steps:
