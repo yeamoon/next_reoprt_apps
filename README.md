@@ -12,7 +12,7 @@
 2. **Steps**:
    - Clone the repository:
      ```bash
-     git clone https://github.com/your-username/next-report-app.git
+     git clone https://github.com/yeamoon/next_reoprt_apps.git
      cd next-report-app
      ```
    - Install dependencies:
@@ -27,7 +27,7 @@
      ```bash
      npm run dev
      ```
-   - Open the app in your browser at `http://localhost:3000/next_report_app`.
+   - Open the app in your browser at `http://localhost:3000/next_report_apps`.
 
 3. **Running Tests**:
    - **Unit Tests**:
