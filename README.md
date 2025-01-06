@@ -127,8 +127,9 @@
 1. Commit and push changes to the `main` branch.
 2. GitHub Actions builds the Docker image, pushes it to Docker Hub, and deploys it to a GCP VM.
 3. Access the app at:  
-   **https://yeamoon.github.io/next_reoprt_apps/**
-4. Run smoke tests to confirm the app is live.
+   **http://34.132.122.250:3000/**
+
+5. Run smoke tests to confirm the app is live.
 
 
 
