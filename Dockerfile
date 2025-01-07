@@ -1,38 +1,34 @@
-# Install dependencies only when needed
-FROM node:20 AS dependencies
+# Step 1: Use an official Node.js image as the base
+FROM node:18-alpine AS builder
+
+# Step 2: Set the working directory inside the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Step 3: Copy package.json and package-lock.json to the container
 COPY package.json package-lock.json ./
 
-# Install dependencies
-RUN npm install --frozen-lockfile --legacy-peer-deps
+# Step 4: Install dependencies
+RUN npm install
 
-# Build the application
-FROM node:20 AS builder
-WORKDIR /app
-
-# Copy all application files
+# Step 5: Copy the rest of the application code to the container
 COPY . .
 
-# Copy installed dependencies from the previous stage
-COPY --from=dependencies /app/node_modules ./node_modules
-
-# Build the Next.js app (this will generate the static files in `out`)
+# Step 6: Build the Next.js application
 RUN npm run build
 
-# Production image for running the app
-FROM node:20 AS runner
+# Step 7: Use a smaller Node.js image for the runtime environment
+FROM node:18-alpine AS runner
+
+# Step 8: Set the working directory inside the container
 WORKDIR /app
 
-# Install `serve` to serve the static files
-RUN npm install -g serve
+# Step 9: Copy the built app and `node_modules` from the builder stage
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
 
-# Copy the Next.js static export and production files
-COPY --from=builder /app/out ./out
-
-# Expose the port
+# Step 10: Expose the default Next.js port
 EXPOSE 3000
 
-# Start the app using serve to serve the static files
-CMD ["npx", "serve@latest", "out", "-l", "3000"]
+# Step 11: Set the default command to start the application in production
+CMD ["npm", "run", "start"]
