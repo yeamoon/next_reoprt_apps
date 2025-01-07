@@ -41,9 +41,9 @@ jobs:
       - name: Run Tests
         run: npm test
 
-      - name: Serve the app
+      - name: Start the app
         run: |
-          npx serve out &
+          npm start &
           sleep 10
 
 
