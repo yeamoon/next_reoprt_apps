@@ -1,56 +1,34 @@
-# Step 1: Use a lightweight Node.js image
+# Step 1: Use an official Node.js image as the base
 FROM node:18-alpine AS builder
 
-# Step 2: Set the working directory
+# Step 2: Set the working directory inside the container
 WORKDIR /app
 
-# Step 3: Install dependencies required for Puppeteer (Chromium)
-RUN apk add --no-cache \
-    chromium \
-    nss \
-    freetype \
-    harfbuzz \
-    ca-certificates \
-    ttf-freefont
-
-# Step 4: Set Puppeteer to skip downloading Chromium (it will use the system-installed Chromium)
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
-
-# Step 5: Copy package.json and package-lock.json
+# Step 3: Copy package.json and package-lock.json to the container
 COPY package.json package-lock.json ./
 
-# Step 6: Install dependencies
+# Step 4: Install dependencies
 RUN npm install --legacy-peer-deps
 
-# Step 7: Copy the rest of the application code
+# Step 5: Copy the rest of the application code to the container
 COPY . .
 
-# Step 8: Build the application
+# Step 6: Build the Next.js application
 RUN npm run build
 
-# Step 9: Use a minimal Node.js image for production
-FROM node:18-alpine AS production
+# Step 7: Use a smaller Node.js image for the runtime environment
+FROM node:18-alpine AS runner
 
-# Step 10: Install Chromium again in the production stage
-RUN apk add --no-cache \
-    chromium \
-    nss \
-    freetype \
-    harfbuzz \
-    ca-certificates \
-    ttf-freefont
-
-# Step 11: Set Puppeteer to use the system-installed Chromium
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
-
-# Step 12: Set the working directory
+# Step 8: Set the working directory inside the container
 WORKDIR /app
 
-# Step 13: Copy the built application from the builder stage
-COPY --from=builder /app ./
+# Step 9: Copy the built app and `node_modules` from the builder stage
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
 
-# Step 14: Expose the desired port (e.g., 3000)
+# Step 10: Expose the default Next.js port
 EXPOSE 3000
 
-# Step 15: Start the application
-CMD ["npm","run", "start"]
+# Step 11: Set the default command to start the application in production
+CMD ["npm", "run", "start"]
