@@ -3,8 +3,6 @@
 /* `playwright.spec.ts` contains functionality tests written for the
 application using Playwright. */
 
-import { expect, test } from '@playwright/test';
-import { chromium     } from 'playwright';
 
 import { expect, test } from '@playwright/test';
 import { chromium } from 'playwright';
